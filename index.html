@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>web-work</title>
+</head>
+<body>
+    <main class='main'>
+        <div id='app'>🤪来一起做梦吧~</div>
+        <div class='play'>
+            <button onclick='startGame()'>开始</button>
+            <button onclick='continueGame()'>继续</button>
+            <button onclick='stopGame()'>停止</button>
+        </div>
+        <div class="fabo">
+            计算斐波那契数列
+        </div>
+        <div class='normal'>
+            <button onclick='normalPost(34)'>34</button>
+            <button onclick='normalPost(42)'>42</button>
+        </div>
+    </main>    
+</body>
+<style>
+    * {
+        margin: 0;
+        padding: 0; 
+    }
+    main {
+        width: 500px;
+        height: 500px;
+        margin: 0 auto;
+    }
+    #app {
+        height: 300px;
+        line-height: 300px;
+        text-align: center;
+    }
+    button {
+        padding: 2px 4px;
+    }
+    .play,
+    .fabo,
+    .normal {
+        text-align: center;
+    }
+    .fabo,
+    .normal {
+        display: none;
+    }
+    .show {
+        display: block;
+    }
+</style>
+<script>
+
+function startGame() {
+    worker.postMessage('start')
+}
+function stopGame() {
+    worker.postMessage('stop')
+}
+function continueGame() {
+    worker.postMessage('');
+}
+function normalPost(num) {
+    worker.postMessage(num);
+}
+var worker = new Worker('dedicate-worker.js');
+var app = document.querySelector('#app');
+
+var fabo = document.querySelector('.fabo');
+var normal = document.querySelector('.normal');
+
+
+worker.addEventListener('message', (e) => {
+    console.log(e.data.code);
+    // app.textContent = e.data;
+    var res = e.data;
+    switch (e.data.code) {
+        default:
+            app.textContent = res.msg;
+            break;
+    }
+    if (e.data.code === 'stop') {
+        normal.classList.add('show')
+        fabo.classList.add('show')
+    }
+})
+
+
+</script>
+</html>

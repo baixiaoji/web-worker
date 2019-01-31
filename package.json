@@ -1,0 +1,21 @@
+{
+  "name": "web-worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dedicate-worker.js",
+  "scripts": {
+    "dedicate": "npx anywhere",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baixiaoji/web-worker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baixiaoji/web-worker/issues"
+  },
+  "homepage": "https://github.com/baixiaoji/web-worker#readme"
+}
