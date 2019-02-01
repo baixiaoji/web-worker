@@ -21,6 +21,8 @@
             <button onclick='normalPost(34)'>34</button>
             <button onclick='normalPost(42)'>42</button>
         </div>
+        <input  id='input'  type="text">
+        <div id='app2'>🤪</div>
     </main>    
 </body>
 <style>
@@ -70,10 +72,11 @@ function normalPost(num) {
 }
 var worker = new Worker('dedicate-worker.js');
 var app = document.querySelector('#app');
+var app2 = document.querySelector('#app2');
 
 var fabo = document.querySelector('.fabo');
 var normal = document.querySelector('.normal');
-
+var input = document.querySelector('#input');
 
 worker.addEventListener('message', (e) => {
     console.log(e.data.code);
@@ -90,6 +93,22 @@ worker.addEventListener('message', (e) => {
     }
 })
 
+var shareWorker = new SharedWorker('share-worker.js', 'sharedWork');
+// shareWorker.port.start();
 
+// shareWorker.port.addEventListener('message', (e) => {
+//     app2.textContent = e.data;
+// })
+shareWorker.port.onmessage = function(e) {
+    app2.textContent = e.data;
+}
+input.addEventListener('change', (e) => {
+    shareWorker.port.postMessage({value: e.target.value, type: 'write'});
+})
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') { 
+        shareWorker.port.postMessage({value: '', type: 'pull'});
+    }
+})
 </script>
 </html>
