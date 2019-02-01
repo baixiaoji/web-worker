@@ -22,8 +22,9 @@ onconnect = function (messageEvent) {
         // obj.pub(event.data);
         swicthByTypeCode(event.data);
     })
+    // 如果 addEventListener 绑定 还需要手动触发  source.start();
     // source.onmessage = function() {
-    //     source.postMessage(messageEvent.data);
+    //     swicthByTypeCode(event.data);
     // }
     source.start();
 
