@@ -8,21 +8,7 @@
 </head>
 <body>
     <main class='main'>
-        <div id='app'>🤪来一起做梦吧~</div>
-        <div class='play'>
-            <button onclick='startGame()'>开始</button>
-            <button onclick='continueGame()'>继续</button>
-            <button onclick='stopGame()'>停止</button>
-        </div>
-        <div class="fabo">
-            计算斐波那契数列
-        </div>
-        <div class='normal'>
-            <button onclick='normalPost(34)'>34</button>
-            <button onclick='normalPost(42)'>42</button>
-        </div>
-        <input  id='input'  type="text">
-        <div id='app2'>🤪</div>
+        更多查看控制台信息
     </main>    
 </body>
 <style>
@@ -35,80 +21,26 @@
         height: 500px;
         margin: 0 auto;
     }
-    #app {
-        height: 300px;
-        line-height: 300px;
-        text-align: center;
-    }
-    button {
-        padding: 2px 4px;
-    }
-    .play,
-    .fabo,
-    .normal {
-        text-align: center;
-    }
-    .fabo,
-    .normal {
-        display: none;
-    }
-    .show {
-        display: block;
+    .main {
+        margin-top: 10px;
     }
 </style>
 <script>
 
-function startGame() {
-    worker.postMessage('start')
-}
-function stopGame() {
-    worker.postMessage('stop')
-}
-function continueGame() {
-    worker.postMessage('');
-}
-function normalPost(num) {
-    worker.postMessage(num);
-}
-var worker = new Worker('dedicate-worker.js');
-var app = document.querySelector('#app');
-var app2 = document.querySelector('#app2');
+var worker1 = new Worker('worker1.js');
+var worker2 = new Worker('worker2.js');
 
-var fabo = document.querySelector('.fabo');
-var normal = document.querySelector('.normal');
-var input = document.querySelector('#input');
+var channel = new MessageChannel();
+var port1 = channel.port1;
+var port2 = channel.port2;
 
-worker.addEventListener('message', (e) => {
-    console.log(e.data.code);
-    // app.textContent = e.data;
-    var res = e.data;
-    switch (e.data.code) {
-        default:
-            app.textContent = res.msg;
-            break;
-    }
-    if (e.data.code === 'stop') {
-        normal.classList.add('show')
-        fabo.classList.add('show')
-    }
+
+worker1.postMessage('init', [port1]);
+worker2.postMessage('init', [port2]);
+
+worker2.addEventListener('message', function(e) {
+    console.log(e.data);
 })
 
-var shareWorker = new SharedWorker('share-worker.js', 'sharedWork');
-// shareWorker.port.start();
-
-// shareWorker.port.addEventListener('message', (e) => {
-//     app2.textContent = e.data;
-// })
-shareWorker.port.onmessage = function(e) {
-    app2.textContent = e.data;
-}
-input.addEventListener('change', (e) => {
-    shareWorker.port.postMessage({value: e.target.value, type: 'write'});
-})
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') { 
-        shareWorker.port.postMessage({value: '', type: 'pull'});
-    }
-})
 </script>
 </html>
